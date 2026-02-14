@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Para Naty</title>
+    <style>
+        /* Definición de las variables de color de tu captura */
+        :root {
+            --letter: #ffffff;
+            --letter-love: auto;
+            --pink-bg: #ffebf2;
+            --hot-pink: #ff4d94;
+        }
+
+        body { 
+            margin: 0; 
+            height: 100vh; 
+            background: var(--pink-bg); 
+            display: flex; 
+            justify-content: center; 
+            align-items: center; 
+            font-family: 'Arial', sans-serif;
+            overflow: hidden;
+        }
+
+        /* El código exacto que me pasaste adaptado */
+        .San_Valentin {
+            position: absolute;
+            width: 90%;
+            left: 50%; /* Para que el translateX(-50%) funcione */
+            top: 50%;
+            font-size: 2rem; /* Corregido 'front-size' a 'font-size' */
+            font-family: "Dancing Script", cursive; /* Usando una fuente similar a "Te Amo Mi Niña" */
+            height: var(--letter-love);
+            transform: translateX(-50%) translateY(-50%);
+            background: var(--letter);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px rgba(214, 51, 132, 0.2);
+            text-align: center;
+            color: #d63384;
+            border: 2px solid #ff99bb;
+            z-index: 10;
+        }
+
+        .oso { font-size: 80px; display: block; margin-bottom: 10px; }
+        .corazon { position: absolute; color: #ff99bb; animation: flotar 5s infinite linear; opacity: 0.6; }
+
+        @keyframes flotar {
+            from { transform: translateY(100vh); }
+            to { transform: translateY(-10vh); }
+        }
+
+        #btn-abrir {
+            padding: 15px 30px;
+            background: var(--hot-pink);
+            color: white;
+            border: none;
+            border-radius: 50px;
+            font-weight: bold;
+            cursor: pointer;
+            box-shadow: 0 5px 15px rgba(255, 77, 148, 0.3);
+        }
+    </style>
+    <link href="https://fonts.googleapis.com/css2?family=Dancing+Script:wght@700&display=swap" rel="stylesheet">
+</head>
+<body>
+
+    <button id="btn-abrir">Abrir mensaje de mi parte ✨</button>
+
+    <div id="contenedor" style="display: none;">
+        <div class="San_Valentin">
+            <span class="oso">🧸</span>
+            Feliz San Valentín, <br>
+            te amo Naty ❤️
+        </div>
+    </div>
+
+    <audio id="musica" loop><source src="https://files.catbox.moe/6f9zpt.mp3" type="audio/mpeg"></audio>
+
+    <script>
+        document.getElementById('btn-abrir').onclick = function() {
+            this.style.display = 'none';
+            document.getElementById('contenedor').style.display = 'block';
+            document.getElementById('musica').play();
+
+            // Lluvia de corazones de fondo
+            setInterval(() => {
+                const h = document.createElement('div');
+                h.className = 'corazon';
+                h.innerHTML = '❤️';
+                h.style.left = Math.random() * 100 + 'vw';
+                h.style.fontSize = (Math.random() * 20 + 10) + 'px';
+                h.style.animationDuration = (Math.random() * 2 + 3) + 's';
+                document.body.appendChild(h);
+                setTimeout(() => h.remove(), 5000);
+            }, 400);
+        };
+    </script>
+</body>
+</html>
