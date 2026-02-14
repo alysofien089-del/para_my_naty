@@ -5,69 +5,63 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Para Naty</title>
     <style>
-        body { margin: 0; overflow: hidden; background: #000; font-family: sans-serif; }
-        #ui { position: absolute; top: 30px; width: 100%; text-align: center; color: white; z-index: 10; }
-        .titulo { font-size: 20px; font-weight: bold; text-shadow: 0 0 15px #bc13fe; padding: 0 15px; }
-        #btn { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px 30px; background: #4b0082; color: white; border: none; border-radius: 30px; z-index: 20; font-size: 16px; box-shadow: 0 0 15px #fff; cursor: pointer; }
-        .elogio { position: absolute; color: rgba(255,255,255,0.8); font-size: 11px; pointer-events: none; text-shadow: 0 0 5px #fff; white-space: nowrap; }
+        body { margin: 0; overflow: hidden; background: #000; font-family: 'Arial', sans-serif; }
+        #canvas-container { position: fixed; top: 0; left: 0; width: 100%; height: 100%; }
+        #ui { position: absolute; top: 10%; width: 100%; text-align: center; color: white; z-index: 10; pointer-events: none; }
+        .titulo { font-size: 28px; font-weight: bold; text-shadow: 0 0 15px #ff007f, 0 0 30px #4b0082; padding: 0 20px; line-height: 1.4; }
+        #btn-entrar { position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%); padding: 15px 35px; background: rgba(255, 0, 127, 0.7); color: white; border: 2px solid #fff; border-radius: 30px; z-index: 100; font-size: 22px; cursor: pointer; box-shadow: 0 0 20px #ff007f; transition: 0.3s; font-weight: bold; }
+        #btn-entrar:hover { background: #ff007f; transform: translate(-50%, -50%) scale(1.1); }
+        .elogio { position: absolute; color: rgba(255,255,255,0.9); font-size: 13px; pointer-events: none; text-shadow: 0 0 5px #ff007f; white-space: nowrap; font-style: italic; }
     </style>
 </head>
 <body>
-    <div id="ui"><div class="titulo">𝑵𝒂𝒕𝒚, 𝒕𝒆 𝒂𝒎𝒐 𝒎𝒖𝒄𝒉𝒐 𝒎𝒊 𝒑𝒓𝒊𝒏𝒄𝒆𝒔𝒂 𝒉𝒆𝒓𝒎𝒐𝒔𝒂 <3</div></div>
-    <button id="btn">Entrar al universo de Naty ✨</button>
-    <audio id="musi" loop><source src="https://files.catbox.moe/6f9zpt.mp3" type="audio/mpeg"></audio>
+    <div id="ui">
+        <div class="titulo">𝑵𝒂𝒕𝒚, 𝒕𝒆 𝒂𝒎𝒐 𝒎𝒖𝒄𝒉𝒐 𝒎𝒊 𝒑𝒓𝒊𝒏𝒄𝒆𝒔𝒂 𝒉𝒆𝒓𝒎𝒐𝒔𝒂 <3</div>
+    </div>
+    
+    <button id="btn-entrar">𝑴𝒊 𝒈𝒓𝒂𝒏 𝒖𝒏𝒊𝒗𝒆𝒓𝒔𝒐 ✨</button>
+    
+    <audio id="musica" loop><source src="https://files.catbox.moe/6f9zpt.mp3" type="audio/mpeg"></audio>
+    <div id="canvas-container"></div>
 
     <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
-    <script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
     <script>
-        let scene, camera, renderer, controls, stars;
-        const elogios = ["Eres mi sol", "Naty, eres perfecta", "Amo tus ojitos", "Mi princesa", "Eres arte", "Te amo infinito", "Eres mi sueño", "Mi lugar seguro", "La más hermosa", "Eres magia", "Mi pedacito de cielo", "Tu sonrisa es todo", "Eres increíble", "Mi vida es mejor contigo", "Te elegiría mil veces", "Eres luz", "Mi persona favorita", "Amo todo de ti", "Eres mi bendición", "No hay nadie como tú", "Me haces feliz", "Amor de mi vida", "Naty, mi tesoro", "Tus abrazos son mi hogar", "Eres pura ternura", "Brillas más que el sol", "Te amo hoy y siempre", "Eres mi calma", "Mi mundo eres tú", "Eres mi inspiración", "Amo tu forma de ser", "Mi corazón es tuyo", "Naty, eres mi reina", "Tu risa es música", "Gracias por existir", "Eres mi otra mitad", "Mi alma gemela", "Eres mi destino", "Te amo con el alma", "Naty, siempre tú", "Eres mi refugio", "Amo tu inteligencia", "Eres mi regalo", "Mi felicidad eres tú", "Eres mi presente y futuro", "Te adoro, Naty", "Amo estar a tu lado", "Eres mi mayor orgullo", "Tu belleza es infinita", "Paz en mi mundo", "Late por ti mi corazón", "Eres mi historia favorita", "Naty, mi vida entera", "Amo tu dulzura", "Eres mi gran amor", "Siempre para ti", "Naty, mi complemento", "Te amo de aquí a la luna", "Tu corazón de oro", "Mi compañera de vida", "Te amo locamente", "Naty, niña hermosa", "Mi mayor tesoro", "Tu luz me guía", "Eres mi ángel", "Mi universo entero", "Naty, te amo con locura", "La dueña de mi amor", "Eres mi sol diario", "Amo tu compañía", "Eres mi sueño real", "Te amo inmensamente", "Pura belleza eres tú", "Eres mi motor", "Dueña de mis suspiros", "Naty, eres única", "Mi estrella guía", "Amo tu ternura", "No te cambio por nada", "Eres mi mayor suerte", "Naty, eres mi vida", "Te amo por siempre", "Mi razón de sonreír", "Eres mi mundo", "Eres mi todo", "Naty, mi amor eterno", "Mi sol de mañana", "Eres valentía", "Eres mi paz", "Mi mayor deseo", "Te amo infinitamente", "Naty, mi alegría", "Tu voz me encanta", "Eres perfección", "Amo verte feliz", "Eres mi camino", "Naty, corazón lindo", "Te amo muchísimo", "Mi princesa hermosa", "Eres mi vida entera"];
+        let scene, camera, renderer, stars;
+        const elogios = ["Eres mi sol", "Naty, eres perfecta", "Amo tus ojitos", "Mi princesa", "Eres arte", "Te amo infinito", "Eres mi sueño", "Mi lugar seguro", "La más hermosa", "Eres magia", "Mi pedacito de cielo", "Tu sonrisa es todo", "Eres increíble", "Mi vida es mejor contigo", "Te elegiría mil veces", "Eres luz", "Mi persona favorita", "Amo todo de ti", "Eres mi bendición", "No hay nadie como tú", "Me haces feliz", "Amor de mi vida", "Naty, mi tesoro", "Tus abrazos son mi hogar", "Eres pura ternura", "Brillas más que el sol", "Te amo hoy y siempre", "Eres mi calma", "Mi mundo eres tú", "Eres mi inspiración", "Amo tu forma de ser", "Mi corazón es tuyo", "Naty, eres mi reina", "Tu risa es música", "Gracias por existir", "Eres mi otra mitad", "Mi alma gemela", "Eres mi destino", "Te amo con el alma", "Naty, siempre tú", "Eres mi refugio", "Amo tu inteligencia", "Eres mi regalo", "Mi felicidad eres tú", "Eres mi presente y futuro", "Te adoro, Naty", "Amo estar a tu lado", "Eres mi mayor orgullo", "Tu belleza es infinita", "Paz en mi mundo", "Late por ti mi corazón", "Eres mi historia favorita", "Naty, mi vida entera", "Amo tu dulzura", "Eres mi gran amor", "Siempre para ti", "Naty, mi complemento", "Te amo de aquí a la luna", "Tu corazón de oro", "Mi compañera de vida", "Te amo locamente", "Naty, niña hermosa", "Mi mayor tesoro", "Tu luz me guía", "Eres mi ángel", "Mi universo entero", "Naty, te amo con locura", "La dueña de mi amor", "Eres mi sol diario", "Amo tu compañía", "Eres mi sueño real", "Te amo inmensamente", "Pura belleza eres tú", "Eres mi motor", "Dueña de mis suspiros", "Naty, eres única", "Mi estrella guía", "Amo tu capacidad", "No te cambio por nada", "Eres mi mayor suerte", "Naty, eres mi vida", "Te amo por siempre", "Mi razón de sonreír", "Eres mi mundo", "Eres mi todo", "Naty, mi amor eterno", "Mi sol de mañana", "Eres valentía", "Eres mi paz", "Mi mayor deseo", "Te amo infinitamente", "Naty, mi alegría", "Tu voz me encanta", "Eres perfección", "Amo verte feliz", "Eres mi camino", "Naty, corazón lindo", "Te amo muchísimo", "Mi princesa hermosa", "Eres mi vida entera"];
 
         function init() {
             scene = new THREE.Scene();
-            camera = new THREE.PerspectiveCamera(75, window.innerWidth/window.innerHeight, 0.1, 1000);
-            camera.position.z = 5;
+            camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 1, 1000);
+            camera.position.z = 1; camera.rotation.x = 1.16; camera.rotation.y = -0.12; camera.rotation.z = 0.27;
             renderer = new THREE.WebGLRenderer({ antialias: true });
             renderer.setSize(window.innerWidth, window.innerHeight);
-            document.body.appendChild(renderer.domElement);
-            controls = new THREE.OrbitControls(camera, renderer.domElement);
-            controls.enableDamping = true;
-
-            const geo = new THREE.BufferGeometry();
-            const pos = [];
-            for (let i = 0; i < 10000; i++) {
-                pos.push((Math.random()-0.5)*30, (Math.random()-0.5)*30, (Math.random()-0.5)*30);
-            }
-            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
-            stars = new THREE.Points(geo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.05 }));
+            scene.background = new THREE.Color(0x020205);
+            document.getElementById('canvas-container').appendChild(renderer.domElement);
+            let starGeo = new THREE.BufferGeometry();
+            let starPos = [];
+            for (let i = 0; i < 6000; i++) { starPos.push((Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600, (Math.random() - 0.5) * 600); }
+            starGeo.setAttribute('position', new THREE.Float32BufferAttribute(starPos, 3));
+            stars = new THREE.Points(starGeo, new THREE.PointsMaterial({ color: 0xffffff, size: 0.15 }));
             scene.add(stars);
-
             elogios.forEach((texto) => {
-                const div = document.createElement('div');
-                div.className = 'elogio';
-                div.textContent = texto;
-                document.body.appendChild(div);
-                const v = new THREE.Vector3((Math.random()-0.5)*25, (Math.random()-0.5)*25, (Math.random()-0.5)*25);
+                const div = document.createElement('div'); div.className = 'elogio'; div.textContent = texto; document.body.appendChild(div);
+                const pos = new THREE.Vector3((Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40, (Math.random() - 0.5) * 40);
                 function update() {
-                    const p = v.clone().project(camera);
-                    div.style.left = `${(p.x*.5+.5)*window.innerWidth}px`;
-                    div.style.top = `${(p.y*-.5+.5)*window.innerHeight}px`;
+                    const p = pos.clone().project(camera);
+                    div.style.left = `${(p.x * 0.5 + 0.5) * window.innerWidth}px`;
+                    div.style.top = `${(p.y * -0.5 + 0.5) * window.innerHeight}px`;
                     div.style.display = p.z < 1 ? 'block' : 'none';
+                    div.style.opacity = Math.sin(Date.now() * 0.001 + pos.x) * 0.4 + 0.6;
                     requestAnimationFrame(update);
                 }
                 update();
             });
-            animate();
+            render();
         }
-        function animate() {
-            requestAnimationFrame(animate);
-            stars.rotation.y += 0.0005;
-            controls.update();
-            renderer.render(scene, camera);
-        }
-        document.getElementById('btn').onclick = () => {
-            document.getElementById('btn').style.display = 'none';
-            document.getElementById('musi').play().catch(() => {});
+        function render() { stars.rotation.y += 0.0006; renderer.render(scene, camera); requestAnimationFrame(render); }
+        document.getElementById('btn-entrar').onclick = () => {
+            document.getElementById('btn-entrar').style.display = 'none';
+            document.getElementById('musica').play();
             init();
         };
     </script>
